@@ -5,7 +5,7 @@ namespace StructConlsole
     public struct Currency
     {
         public string Name;
-        public double ExchangeRate; 
+        public double ExchangeRate;
 
         public Currency(string name, double exchangeRate)
         {
@@ -31,20 +31,11 @@ namespace StructConlsole
             Weight = weight;
         }
 
-        public double GetUnitPriceUAH()
-        {
-            return Cost.ExchangeRate;
-        }
+        public double GetUnitPriceUAH() => Cost.ExchangeRate;
 
-        public double GetTotalPriceUAH()
-        {
-            return Cost.ExchangeRate * Quantity;
-        }
+        public double GetTotalPriceUAH() => Cost.ExchangeRate * Quantity;
 
-        public double GetTotalWeight()
-        {
-            return Weight * Quantity;
-        }
+        public double GetTotalWeight() => Weight * Quantity;
     }
 
     class Program
@@ -55,80 +46,100 @@ namespace StructConlsole
 
             Product[] products = null;
             bool exit = false;
+
             while (!exit)
             {
-                Console.Clear();
-
-                Console.ForegroundColor = ConsoleColor.DarkMagenta;
-                Console.WriteLine("========== MAIN MENU ==========");
-                Console.ResetColor();
-
-                Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.WriteLine("1. Enter product list");
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("2. Display all products");
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("3. Show cheapest and most expensive product");
-                Console.ForegroundColor = ConsoleColor.Magenta;
-                Console.WriteLine("4. Sort products by unit price");
-                Console.ForegroundColor = ConsoleColor.Blue;
-                Console.WriteLine("5. Sort products by quantity");
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("6. Exit");
-                Console.ResetColor();
-
-                Console.Write("Select an option: ");
+                ShowMenu();
                 string choice = Console.ReadLine();
-
-                switch (choice)
-                {
-                    case "1":
-                        products = ReadProductsArray();
-                        Pause();
-                        break;
-                    case "2":
-                        if (EnsureProductsLoaded(products)) PrintProducts(products);
-                        Pause();
-                        break;
-                    case "3":
-                        if (EnsureProductsLoaded(products))
-                        {
-                            GetProductsInfo(products, out Product cheapest, out Product mostExpensive);
-                            Console.WriteLine("--- Cheapest Product ---");
-                            PrintProduct(cheapest);
-                            Console.WriteLine("--- Most Expensive Product ---");
-                            PrintProduct(mostExpensive);
-                        }
-                        Pause();
-                        break;
-                    case "4":
-                        if (EnsureProductsLoaded(products))
-                        {
-                            SortProductsByPrice(products);
-                            Console.WriteLine("Products sorted by unit price.");
-                        }
-                        Pause();
-                        break;
-                    case "5":
-                        if (EnsureProductsLoaded(products))
-                        {
-                            SortProductsByQuantity(products);
-                            Console.WriteLine("Products sorted by quantity.");
-                        }
-                        Pause();
-                        break;
-                    case "6":
-                        exit = true;
-                        break;
-                    default:
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Invalid selection. Try again.");
-                        Console.ResetColor();
-                        Pause();
-                        break;
-                }
+                HandleMenuChoice(choice, ref products, ref exit);
             }
         }
+
+        // SRP issue 1 fix
+
+        static void ShowMenu()
+        {
+            Console.Clear();
+
+            Console.ForegroundColor = ConsoleColor.DarkMagenta;
+            Console.WriteLine("========== MAIN MENU ==========");
+            Console.ResetColor();
+
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("1. Enter product list");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("2. Display all products");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("3. Show cheapest and most expensive product");
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine("4. Sort products by unit price");
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine("5. Sort products by quantity");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("6. Exit");
+            Console.ResetColor();
+
+            Console.Write("Select an option: ");
+        }
+
+        static void HandleMenuChoice(string choice, ref Product[] products, ref bool exit)
+        {
+            switch (choice)
+            {
+                case "1":
+                    products = ReadProductsArray();
+                    Pause();
+                    break;
+
+                case "2":
+                    if (EnsureProductsLoaded(products)) PrintProducts(products);
+                    Pause();
+                    break;
+
+                case "3":
+                    if (EnsureProductsLoaded(products))
+                    {
+                        GetProductsInfo(products, out Product cheapest, out Product mostExpensive);
+                        Console.WriteLine("--- Cheapest Product ---");
+                        PrintProduct(cheapest);
+                        Console.WriteLine("--- Most Expensive Product ---");
+                        PrintProduct(mostExpensive);
+                    }
+                    Pause();
+                    break;
+
+                case "4":
+                    if (EnsureProductsLoaded(products))
+                    {
+                        SortProductsByPrice(products);
+                        Console.WriteLine("Products sorted by unit price.");
+                    }
+                    Pause();
+                    break;
+
+                case "5":
+                    if (EnsureProductsLoaded(products))
+                    {
+                        SortProductsByQuantity(products);
+                        Console.WriteLine("Products sorted by quantity.");
+                    }
+                    Pause();
+                    break;
+
+                case "6":
+                    exit = true;
+                    break;
+
+                default:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Invalid selection. Try again.");
+                    Console.ResetColor();
+                    Pause();
+                    break;
+            }
+        }
+
+        // --------------------------- Utility methods ---------------------------
 
         static void Pause()
         {
@@ -244,14 +255,8 @@ namespace StructConlsole
             return 0;
         }
 
-        public static void SortProductsByPrice(Product[] arr)
-        {
-            Array.Sort(arr, CompareByPrice);
-        }
+        public static void SortProductsByPrice(Product[] arr) => Array.Sort(arr, CompareByPrice);
 
-        public static void SortProductsByQuantity(Product[] arr)
-        {
-            Array.Sort(arr, CompareByQuantity);
-        }
+        public static void SortProductsByQuantity(Product[] arr) => Array.Sort(arr, CompareByQuantity);
     }
 }
